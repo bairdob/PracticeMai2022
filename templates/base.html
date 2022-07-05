@@ -1,4 +1,10 @@
 <!doctype html>
+<head>
+    <script src="{{url_for('static', filename='jquery-2.2.2.min.js')}}"></script>
+    <script src="{{url_for('static', filename='leaflet/leaflet.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='leaflet/leaflet.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='demo.css')}}">
+</head>
 <div class="container">
     <h1>navigation here</h1>
     {% block content %} {% endblock %}

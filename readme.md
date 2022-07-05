@@ -8,3 +8,23 @@
 На выходе — полилиния.
 
 Фронтэнд: форма ввода параметров (2 точки, кол-во узлов), отправка запроса на сервер, получение ответа,и отображение линии на карте.
+
+# Docker
+
+1. Build docker container
+
+```bash
+docker image build -t python-flask-docker .  
+```
+
+2. Run docker container
+
+```bash
+docker container run -p 5001:5000 python-flask-docker
+```
+
+3. Open url
+
+```
+127.0.0.1:5001
+```

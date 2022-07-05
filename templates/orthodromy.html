@@ -7,54 +7,88 @@
             border-collapse: collapse;
             text-align: left;
         }
+
+        p{
+            font-weight: normal;
+            font-size: 60%;
+        }
+
         .orthodromy td{
             font-weight: normal;
             font-size: 60%;
         }
+
+        .column {
+            float: left;
+            width: 50%;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
     </style>
 
     <h2>Построение линии ортодромии<h2>
-    <form action="/orthodromy" method="post" name="orthodromyForm">
-        <div>
-            <table class="orthodromy">
-                <thead>
-                    <tr>
-                        <th>Параметры</th>
-                        <th>Ввод данных</th>
-                        <th>Описание</th>
-                    </tr>
-                </thead>           
 
-                <tbody>
-                    <tr>
-                        <td>{{ orthodromyForm.input_point1.label }}</td>
-                        <td>{{ orthodromyForm.input_point1() }}</td>
-                        <td>{{ orthodromyForm.input_point1.description }}</td>
-                    </tr>
+    <p>Пример: <a href="{{ exampleurl }}">{{ exampleurl }}</a></p>
 
-                    <tr>
-                        <td>{{ orthodromyForm.input_point2.label }}</td>
-                        <td>{{ orthodromyForm.input_point2() }}</td>
-                        <td>{{ orthodromyForm.input_point2.description }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>{{ orthodromyForm.input_coordinate_system.label }}</td>
-                        <td>{{ orthodromyForm.input_coordinate_system() }}</td>
-                        <td>{{ orthodromyForm.input_coordinate_system.description }}</td>
-                    </tr>
+    <div class="row">
+        <div class="column">
+            <form action="/orthodromy" method="post" name="orthodromyForm">
+                <div>
+                    <table class="orthodromy">
+                        <thead>
+                            <tr>
+                                <th>Параметры</th>
+                                <th>Ввод данных</th>
+                                <th>Описание</th>
+                            </tr>
+                        </thead>           
 
-                    <tr>
-                        <td>{{ orthodromyForm.input_count.label }}</td>
-                        <td>{{ orthodromyForm.input_count() }}</td>
-                        <td>{{ orthodromyForm.input_count.description }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                        <tbody>
+                            <tr>
+                                <td>{{ orthodromyForm.input_point1.label }}</td>
+                                <td>{{ orthodromyForm.input_point1() }}</td>
+                                <td>{{ orthodromyForm.input_point1.description }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>{{ orthodromyForm.input_point2.label }}</td>
+                                <td>{{ orthodromyForm.input_point2() }}</td>
+                                <td>{{ orthodromyForm.input_point2.description }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>{{ orthodromyForm.input_coordinate_system.label }}</td>
+                                <td>{{ orthodromyForm.input_coordinate_system() }}</td>
+                                <td>{{ orthodromyForm.input_coordinate_system.description }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>{{ orthodromyForm.input_count.label }}</td>
+                                <td>{{ orthodromyForm.input_count() }}</td>
+                                <td>{{ orthodromyForm.input_count.description }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><input type="submit" value="Выполнить"></p>
+                {{ orthodromyForm.output_linestring }}
+            </form>
+        </div> 
+     
+        <div class="column">
+            <div id="llmap"></div>
+            <script src="{{url_for('static', filename='demo.js')}}"></script>
+
+            <input id="clickMe" type="button" value="point1" onclick="makePoint1();" />
+            <input id="clickMe" type="button" value="point2" onclick="makePoint2();" />
+            <input id="clickMe" type="button" value="test" onclick="test();" />
         </div>
-        <p><input type="submit" value="Выполнить"></p>
-        {{ orthodromyForm.output_linestring }}
-    </form>
+    </div>
+
 {% endblock %}
 
 
