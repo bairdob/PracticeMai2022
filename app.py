@@ -16,22 +16,31 @@ app = Flask(__name__)
 
 HOST = '0.0.0.0'
 HOSTDOCKER = str(socket.gethostbyname(socket.gethostname()))
-
 PATTERN_POINT = '^POINT\([-]?[0-9]*.[0-9]+ [-]?[0-9]*.[0-9]+\)'
 EXAMPLEURL = 'http://127.0.0.1:5000/api/calculate_orthodrome_line?point1=POINT(37.6135769672713991+55.75410998124817752)&point2=POINT(139.74946157054466767+35.68696276437117376)&cs=СК-42&count=20'
 
 
 class DataForm(Form):
     input_point1 = StringField(
+        label='point1',
         default='POINT(0.0 0.0)',
+        description = 'Начальная точка в формате WKT',
         validators=[DataRequired(), Regexp(PATTERN_POINT)])
     input_point2 = StringField(
+        label='poin2',
         default='POINT(0.0 0.0)',
+        description = 'Конечная точка в формате WKT',
         validators=[DataRequired(), Regexp(PATTERN_POINT)])
-    input_coordinate_system = SelectField(choices=[('СК-42'), ('другое')])
-    input_count = StringField(default='10',
-                              validators=[DataRequired(),
-                                          Regexp('^[0-9]+$')])
+    input_coordinate_system = SelectField(
+        label='cs',
+        choices=[('СК-42', 'СК-42'), ('другое', 'другое')],
+        default='СК-42',
+        description = 'Система координат')
+    input_count = StringField(
+        label='count',
+        default='10',
+        description = 'Количество рассчитываемых точек, по-умолчанию 10',
+        validators=[DataRequired(), Regexp('^[0-9]+$')])
     output_linestring = TextAreaField('LINESTRING(0.0)')
     submit = SubmitField("Submit")
 
@@ -44,14 +53,6 @@ def index():
 @app.route('/orthodromy', methods=['GET', 'POST'])
 def orthodromy():
     orthodromyForm = DataForm(request.form)
-    orthodromyForm.input_point1.label = 'point1'
-    orthodromyForm.input_point1.description = 'Начальная точка в формате WKT'
-    orthodromyForm.input_point2.label = 'point2'
-    orthodromyForm.input_point2.description = 'Конечная точка в формате WKT'
-    orthodromyForm.input_coordinate_system.label = 'cs'
-    orthodromyForm.input_coordinate_system.description = 'Система координат'
-    orthodromyForm.input_count.label = 'count'
-    orthodromyForm.input_count.description = 'Количество рассчитываемых точек, по-умолчанию 10'
 
     linestring = url_for('calculate_orthodrome_line',
                          point1=orthodromyForm.input_point1.data,
@@ -59,14 +60,15 @@ def orthodromy():
                          cs=orthodromyForm.input_coordinate_system.data,
                          count=orthodromyForm.input_count.data)
 
-    # my_url = request.host_url + linestring
-    my_url = 'http://' + HOSTDOCKER + ':5000'+ linestring
-    
+    my_url = request.host_url + linestring
+    # my_url = 'http://' + HOSTDOCKER + ':5000'+ linestring
+
     if request.method == 'POST' and orthodromyForm.validate():
         orthodromyForm.output_linestring.data = requests.get(url=my_url).text
 
         return render_template('orthodromy.html',
-                               orthodromyForm=orthodromyForm,exampleurl=my_url)
+                               orthodromyForm=orthodromyForm,
+                               exampleurl=my_url)
 
     return render_template('orthodromy.html',
                            orthodromyForm=orthodromyForm,
@@ -92,6 +94,7 @@ def calculate_orthodrome_line():
         return linestring, 200
 
     return 'Wrong coordinate system', 400
+
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST)
