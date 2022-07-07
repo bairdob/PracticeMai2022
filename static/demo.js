@@ -21,6 +21,7 @@ let markers = {};
 function makePoint(inputId, markerId) {
 
     let wkt;
+    map.off('click');
     map.on('click', function(event) {
         if (markers[markerId]) {
             map.removeLayer(markers[markerId]);
