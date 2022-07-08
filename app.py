@@ -41,7 +41,6 @@ class DataForm(Form):
         default='10',
         description = 'Количество рассчитываемых точек, по-умолчанию 10',
         validators=[DataRequired(), Regexp('^[0-9]+$')])
-    output_linestring = TextAreaField('LINESTRING(0.0)')
     submit = SubmitField("Submit")
 
 
@@ -86,7 +85,6 @@ def calculate_orthodrome_line():
         geoid = Geod(ellps="WGS84")
         extra_points = geoid.npts(point1.x, point1.y, point2.x, point2.y,
                                   count)
-
         points = str(extra_points).strip('[]').replace(',', '').replace(
             '(', '').replace(')', ',')
         linestring = 'LINESTRING(' + points.strip(',') + ')'

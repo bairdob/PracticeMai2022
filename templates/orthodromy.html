@@ -6,6 +6,7 @@
             border: 1px solid black;
             border-collapse: collapse;
             text-align: left;
+            /*width:400px;*/
         }
 
         p{
@@ -28,15 +29,19 @@
             display: table;
             clear: both;
         }
+        textarea {
+            width: 90%;
+            height: 50px;
+        }    
     </style>
 
     <h2>Построение линии ортодромии<h2>
 
     <p>Пример: <a href="{{ exampleurl }}">{{ exampleurl }}</a></p>
-
+    
     <div class="row">
         <div class="column">
-            <form action="/orthodromy" method="post" name="orthodromyForm">
+            <form action="/orthodromy" method="post" id="orthodromyForm">
                 <div>
                     <table class="orthodromy">
                         <thead>
@@ -50,13 +55,18 @@
                         <tbody>
                             <tr>
                                 <td>{{ orthodromyForm.input_point1.label }}</td>
-                                <td>{{ orthodromyForm.input_point1() }}</td>
+                                <td>
+                                    {{ orthodromyForm.input_point1() }} <button style='font-size:12px' type="button" onclick="makePoint('input_point1', 'marker1');" > <i class='fa-solid fa-location-dot'></i></button>
+                                </td>
                                 <td>{{ orthodromyForm.input_point1.description }}</td>
                             </tr>
 
                             <tr>
                                 <td>{{ orthodromyForm.input_point2.label }}</td>
-                                <td>{{ orthodromyForm.input_point2() }}</td>
+                                <td>
+                                    {{ orthodromyForm.input_point2() }}
+                                    <button style='font-size:12px' type="button" onclick="makePoint('input_point2', 'marker2');" > <i class='fa-solid fa-location-dot'></i></button>
+                                </td>
                                 <td>{{ orthodromyForm.input_point2.description }}</td>
                             </tr>
                             
@@ -74,19 +84,16 @@
                         </tbody>
                     </table>
                 </div>
-                <p><input type="submit" value="Выполнить"></p>
-                {{ orthodromyForm.output_linestring }}
+                <p><input id="clickMe" type="button" value="Выполнить" onclick="calculate_orthodrome_line();" /></p>
+
             </form>
         </div> 
      
         <div class="column">
             <div id="llmap"></div>
             <script src="{{url_for('static', filename='demo.js')}}"></script>
-
-            <input id="clickMe" type="button" value="point1" onclick="makePoint('input_point1', 'marker1');" />
-            <input id="clickMe" type="button" value="point2" onclick="makePoint('input_point2', 'marker2');" />
-            <input id="clickMe" type="button" value="test" onclick="test();" />
         </div>
+
     </div>
 
 {% endblock %}
