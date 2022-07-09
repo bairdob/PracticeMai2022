@@ -62,12 +62,12 @@ def orthodromy():
     my_url = request.host_url + linestring
     # my_url = 'http://' + HOSTDOCKER + ':5000'+ linestring
 
-    if request.method == 'POST' and orthodromyForm.validate():
-        orthodromyForm.output_linestring.data = requests.get(url=my_url).text
+    # if request.method == 'POST' and orthodromyForm.validate():
+    #     orthodromyForm.output_linestring.data = requests.get(url=my_url).text
 
-        return render_template('orthodromy.html',
-                               orthodromyForm=orthodromyForm,
-                               exampleurl=my_url)
+    #     return render_template('orthodromy.html',
+    #                            orthodromyForm=orthodromyForm,
+    #                            exampleurl=my_url)
 
     return render_template('orthodromy.html',
                            orthodromyForm=orthodromyForm,
