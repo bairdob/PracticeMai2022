@@ -1,5 +1,5 @@
-var TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-map = L.map('llmap').fitWorld();
+let TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+let map = L.map('llmap').fitWorld();
 L.tileLayer(TILE_URL).addTo(map);
 
 let markers = {};
@@ -20,17 +20,19 @@ function makePoint(inputId, markerId) {
         wkt = "POINT("+event.latlng.lng.toString()+" "+event.latlng.lat.toString()+")"
         // console.log(markers, wkt)
         document.getElementById(inputId).value = wkt;
+        document.getElementById(inputId).style.backgroundColor = null;
     });
 
 }
 
 
 function calculate_orthodrome_line(){
-    point1 = document.getElementById('input_point1').value;
-    point2 = document.getElementById('input_point2').value;
-    cs = document.getElementById('input_coordinate_system').value;
-    count = document.getElementById('input_count').value;
-    url = 'http://' + window.location.host + '/api/calculate_orthodrome_line?point1='+ point1 + '&point2=' + point2 +'&cs='+ cs +'&count='+ count;
+
+    let point1 = document.getElementById('input_point1').value;
+    let point2 = document.getElementById('input_point2').value;
+    let cs = document.getElementById('input_coordinate_system').value;
+    let count = document.getElementById('input_count').value;
+    let url = 'http://' + window.location.host + '/api/calculate_orthodrome_line?point1='+ point1 + '&point2=' + point2 +'&cs='+ cs +'&count='+ count;
     
     let xhr = new XMLHttpRequest();
     xhr.open("GET", encodeURI(url));
@@ -43,7 +45,6 @@ function calculate_orthodrome_line(){
         }
     };
     
-
 }
 
 function parseLinestring(t) {
@@ -74,3 +75,36 @@ function addPolyline(){
     polyline.addTo(map);
 
 }
+
+function changeInputBackground(element, pattern){
+    if (element.value === '' || !pattern.test(element.value)) {
+        element.style.backgroundColor = '#FFCDD2';
+    } else {
+        element.style.backgroundColor = null;
+    };
+};
+
+let patternDigit = new RegExp(/^[0-9]+$/);
+let patternPoint = new RegExp(/^POINT\([-]?[0-9]*\.[0-9] [-]?[0-9]*\.[0-9]+\)$/);
+
+let point1 = document.getElementById('input_point1');
+let point2 = document.getElementById('input_point2');
+let count = document.getElementById('input_count');
+
+point1.addEventListener('input', function(){
+    changeInputBackground(point1, patternPoint)
+});
+
+point2.addEventListener('input', function(){
+    changeInputBackground(point2, patternPoint)
+});
+
+count.addEventListener('input', function(){
+    changeInputBackground(count, patternDigit)
+});
+
+
+
+
+
+
