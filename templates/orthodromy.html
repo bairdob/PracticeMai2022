@@ -2,99 +2,105 @@
 
 {% block content %}
     <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            text-align: left;
-            /*width:400px;*/
+
+        html, p, .table {
+            font-size: 12px;
         }
 
-        p{
-            font-weight: normal;
-            font-size: 60%;
-        }
-
-        .orthodromy td{
-            font-weight: normal;
-            font-size: 60%;
-        }
-
-        .column {
-            float: left;
-            width: 50%;
-        }
-
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
         textarea {
-            width: 90%;
-            height: 50px;
-        }    
+            font-size: 12px;
+            width: 100%;
+            height: 100px;
+        }
+
+        a {
+            font-weight: normal;
+        }
+
     </style>
 
-    <h2>Построение линии ортодромии<h2>
-
-    <p>Пример: <a href="{{ exampleurl }}">{{ exampleurl }}</a></p>
     
-    <div class="row">
-        <div class="column">
-            <form action="/orthodromy" method="post" id="orthodromyForm">
-                <div>
-                    <table class="orthodromy">
-                        <thead>
-                            <tr>
-                                <th>Параметры</th>
-                                <th>Ввод данных</th>
-                                <th>Описание</th>
-                            </tr>
-                        </thead>           
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-7">
+                <form action="/orthodromy" method="post" id="orthodromyForm">
+                    <div>
+                        <h3>Построение линии ортодромии<h3>
 
-                        <tbody>
-                            <tr>
-                                <td>{{ orthodromyForm.input_point1.label }}</td>
-                                <td>
-                                    {{ orthodromyForm.input_point1() }} <button style='font-size:12px' type="button" onclick="makePoint('input_point1', 'marker1');" > <i class='fa-solid fa-location-dot'></i></button>
-                                </td>
-                                <td>{{ orthodromyForm.input_point1.description }}</td>
-                            </tr>
+                        <p class="text-muted">Функция возвращает линию ортодромии в формате WKT</p>
 
-                            <tr>
-                                <td>{{ orthodromyForm.input_point2.label }}</td>
-                                <td>
-                                    {{ orthodromyForm.input_point2() }}
-                                    <button style='font-size:12px' type="button" onclick="makePoint('input_point2', 'marker2');" > <i class='fa-solid fa-location-dot'></i></button>
-                                </td>
-                                <td>{{ orthodromyForm.input_point2.description }}</td>
-                            </tr>
-                            
-                            <tr>
-                                <td>{{ orthodromyForm.input_coordinate_system.label }}</td>
-                                <td>{{ orthodromyForm.input_coordinate_system() }}</td>
-                                <td>{{ orthodromyForm.input_coordinate_system.description }}</td>
-                            </tr>
+                        <h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/geoapi/calculate_orthodrome_line? point1= <kbd>point1</kbd> &  point2= <kbd>point2</kbd> & cs= <kbd>cs</kbd> & count= <kbd>count</kbd></span></h6>
 
-                            <tr>
-                                <td>{{ orthodromyForm.input_count.label }}</td>
-                                <td>{{ orthodromyForm.input_count() }}</td>
-                                <td>{{ orthodromyForm.input_count.description }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p><input id="clickMe" type="button" value="Выполнить" onclick="calculate_orthodrome_line();" /></p>
-                <p><textarea id="output_linestring" name="output_linestring"></textarea></p>
-            </form>
-        </div> 
-     
-        <div class="column">
-            <div id="llmap"></div>
-            <script src="{{url_for('static', filename='demo.js')}}"></script>
+                        <h6><b>Пример:</b> <a href="{{ exampleurl }}">{{ exampleurl }}</a></h6>
+
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Параметры</th>
+                                    <th>Ввод данных</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>           
+
+                            <tbody>
+                                <tr>
+                                    <td><kbd>{{ orthodromyForm.input_point1.label }}</kbd></td>
+                                    <td>
+                                        <div class="input-group">
+                                            {{ orthodromyForm.input_point1(class="form-control") }} 
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="makePoint('input_point1', 'marker1');" > <i class='fa-solid fa-location-dot'></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>{{ orthodromyForm.input_point1.description }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><kbd>{{ orthodromyForm.input_point2.label }}</kbd></td>
+                                    <td>
+                                        <div class="input-group">
+                                            {{ orthodromyForm.input_point2(class="form-control") }}
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="makePoint('input_point2', 'marker2');" > <i class='fa-solid fa-location-dot'></i></button>
+                                            </span>
+
+                                        </div>
+                                    </td>
+                                    <td>{{ orthodromyForm.input_point2.description }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><kbd>{{ orthodromyForm.input_coordinate_system.label }}</kbd></td>
+                                    <td> {{ orthodromyForm.input_coordinate_system(class_="form-select") }}</td>
+                                    <td>{{ orthodromyForm.input_coordinate_system.description }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><kbd>{{ orthodromyForm.input_count.label }}</kbd></td>
+                                    <td>{{ orthodromyForm.input_count(class_="input-group") }}</td>
+                                    <td>{{ orthodromyForm.input_count.description }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p><input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_orthodrome_line();" /></p>
+                    <div>
+                        <h3>Результат запроса<h3>
+                        <p><textarea id="output_linestring" name="output_linestring"></textarea></p>
+                    </div>
+                </form>
+            </div> 
+         
+            <div class="col-4">
+                <div id="llmap"></div>
+                <script src="{{url_for('static', filename='demo.js')}}"></script>
+            </div>
+
         </div>
-
     </div>
+    
 
 {% endblock %}
 
