@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired, Regexp
 from shapely import wkt
 from pyproj import Geod
 
-import re
+# import re
 import requests
 
 app = Flask(__name__)
