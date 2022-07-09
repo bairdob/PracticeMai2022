@@ -27,7 +27,7 @@ class DataForm(Form):
         description = 'Начальная точка в формате WKT',
         validators=[DataRequired(), Regexp(PATTERN_POINT)])
     input_point2 = StringField(
-        label='poin2',
+        label='point2',
         default='POINT(0.0 0.0)',
         description = 'Конечная точка в формате WKT',
         validators=[DataRequired(), Regexp(PATTERN_POINT)])
@@ -81,7 +81,6 @@ def calculate_orthodrome_line():
     cs = request.args.get('cs')
     count = int(request.args.get('count'))
 
-    print(type(point1))
     if cs == 'СК-42':
         geoid = Geod(ellps="WGS84")
         extra_points = geoid.npts(point1.x, point1.y, point2.x, point2.y,
