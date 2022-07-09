@@ -81,13 +81,17 @@ def calculate_orthodrome_line():
     cs = request.args.get('cs')
     count = int(request.args.get('count'))
 
+    print(type(point1))
     if cs == 'СК-42':
         geoid = Geod(ellps="WGS84")
         extra_points = geoid.npts(point1.x, point1.y, point2.x, point2.y,
                                   count)
-        points = str(extra_points).strip('[]').replace(',', '').replace(
+        points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
+        points += str(extra_points).strip('[]').replace(',', '').replace(
             '(', '').replace(')', ',')
-        linestring = 'LINESTRING(' + points.strip(',') + ')'
+        points += ' ' + str(point2.x) + ' ' + str(point2.y)  #add point2 
+
+        linestring = 'LINESTRING(' + points + ')'
 
         return linestring, 200
 
