@@ -10,12 +10,9 @@ from pyproj import Geod
 
 import re
 import requests
-import socket
 
 app = Flask(__name__)
 
-HOST = '0.0.0.0'
-HOSTDOCKER = str(socket.gethostbyname(socket.gethostname()))
 PATTERN_POINT = '^POINT\([-]?[0-9]*.[0-9]+ [-]?[0-9]*.[0-9]+\)'
 EXAMPLEURL = 'http://127.0.0.1:5000/api/calculate_orthodrome_line?point1=POINT(37.6135769672713991+55.75410998124817752)&point2=POINT(139.74946157054466767+35.68696276437117376)&cs=СК-42&count=20'
 
@@ -53,25 +50,16 @@ def index():
 def orthodromy():
     orthodromyForm = DataForm(request.form)
 
-    linestring = url_for('calculate_orthodrome_line',
+    linestring_url= url_for('calculate_orthodrome_line',
                          point1=orthodromyForm.input_point1.data,
                          point2=orthodromyForm.input_point2.data,
                          cs=orthodromyForm.input_coordinate_system.data,
-                         count=orthodromyForm.input_count.data)
-
-    my_url = request.host_url + linestring
-    # my_url = 'http://' + HOSTDOCKER + ':5000'+ linestring
-
-    # if request.method == 'POST' and orthodromyForm.validate():
-    #     orthodromyForm.output_linestring.data = requests.get(url=my_url).text
-
-    #     return render_template('orthodromy.html',
-    #                            orthodromyForm=orthodromyForm,
-    #                            exampleurl=my_url)
+                         count=orthodromyForm.input_count.data, 
+                         _external =True)
 
     return render_template('orthodromy.html',
                            orthodromyForm=orthodromyForm,
-                           exampleurl=my_url)
+                           exampleurl=linestring_url)
 
 
 @app.route('/api/calculate_orthodrome_line', methods=['GET'])
@@ -98,4 +86,4 @@ def calculate_orthodrome_line():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host=HOST)
+    app.run(debug=True, host='0.0.0.0')
