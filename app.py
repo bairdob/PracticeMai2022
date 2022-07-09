@@ -8,14 +8,11 @@ from wtforms.validators import DataRequired, Regexp
 from shapely import wkt
 from pyproj import Geod
 
-# import re
 import requests
 
 app = Flask(__name__)
 
 PATTERN_POINT = '^POINT\([-]?[0-9]*.[0-9]+ [-]?[0-9]*.[0-9]+\)'
-EXAMPLEURL = 'http://127.0.0.1:5000/api/calculate_orthodrome_line?point1=POINT(37.6135769672713991+55.75410998124817752)&point2=POINT(139.74946157054466767+35.68696276437117376)&cs=СК-42&count=20'
-
 
 class DataForm(Form):
     input_point1 = StringField(
