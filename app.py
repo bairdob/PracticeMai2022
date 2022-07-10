@@ -59,6 +59,19 @@ def orthodromy():
                            exampleurl=linestring_url)
 
 
+def getPolylineWkt(point1, point2, n):
+    geoid = Geod(ellps="WGS84")
+    interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
+    points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
+    points += str(interpolated_points).strip('[]').replace(',', '').replace(
+        '(', '').replace(')', ',')
+    points += ' ' + str(point2.x) + ' ' + str(point2.y)  #add point2 
+
+    linestring = 'LINESTRING(' + points + ')'
+
+    return linestring
+
+
 @app.route('/api/calculate_orthodrome_line', methods=['GET'])
 def calculate_orthodrome_line():
     point1 = wkt.loads(request.args.get('point1'))  # return Point(x,y)
@@ -67,16 +80,7 @@ def calculate_orthodrome_line():
     count = int(request.args.get('count'))
 
     if cs == 'СК-42':
-        geoid = Geod(ellps="WGS84")
-        extra_points = geoid.npts(point1.x, point1.y, point2.x, point2.y,
-                                  count)
-        points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
-        points += str(extra_points).strip('[]').replace(',', '').replace(
-            '(', '').replace(')', ',')
-        points += ' ' + str(point2.x) + ' ' + str(point2.y)  #add point2 
-
-        linestring = 'LINESTRING(' + points + ')'
-
+        linestring = getPolylineWkt(point1, point2, count)
         return linestring, 200
 
     return 'Wrong coordinate system', 400
