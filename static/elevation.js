@@ -62,10 +62,22 @@ function calculate_elevation(){
         if (this.readyState == 4 && this.status == 200) {
             $("#output_linestring").html(this.responseText);
             // console.log(this.responseText);
-            addPolyline();
         }
     };
     
+}
+
+function check_image() {
+
+    var chbox;
+    chbox=document.getElementById('checkbox_image');
+        if (chbox.checked) {
+            imageOverlay.addTo(map)
+        }
+        else {
+            map.removeLayer(imageOverlay)
+        }
+
 }
 
 
