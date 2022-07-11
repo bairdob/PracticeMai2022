@@ -6,9 +6,12 @@ from wtforms.fields import StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Regexp
 
 from shapely import wkt
+from shapely.geometry import Point
+
 from pyproj import Geod
 
 import requests
+import rasterio
 
 app = Flask(__name__)
 
@@ -62,6 +65,7 @@ def orthodromy():
 def getPolylineWkt(point1, point2, n):
     geoid = Geod(ellps="WGS84")
     interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
+
     points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
     points += str(interpolated_points).strip('[]').replace(',', '').replace(
         '(', '').replace(')', ',')
@@ -90,6 +94,25 @@ def calculate_orthodrome_line():
 def elevation():
     
     return render_template('elevation.html')
+
+
+ELEVATION_FILE = 'static/srtm_N55E160.tif'
+
+def get_elevation(lon, lat): # WARNING format (lon, lat)
+    coords = ((lon,lat), (lon,lat))
+    with rasterio.open(ELEVATION_FILE) as src:
+        vals = src.sample(coords)
+        for val in vals:
+            elevation=val[0]
+            return elevation
+
+
+@app.route('/api/elevation', methods=['GET'])
+def calculate_elevation():
+    point = wkt.loads(request.args.get('wkt')) # return Point(x,y)
+    elevation = get_elevation(point.y, point.x)
+    wkt_string = Point([point.x, point.y, elevation]).wkt
+    return wkt_string, 200
 
 
 if __name__ == '__main__':

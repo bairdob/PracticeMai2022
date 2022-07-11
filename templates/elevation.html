@@ -1,12 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
 
+        html, p, .table {
+            font-size: 12px;
+        }
 
-<div id="llmap"></div>
-<div id="my_llmap"></div>
-<script src="{{url_for('static', filename='elevation.js')}}"></script>
+        textarea {
+            font-size: 12px;
+            width: 100%;
+            height: 100px;
+        }
 
+        a {
+            font-weight: normal;
+        }
+
+    </style>
+
+   <div class="container">
+		<div class="row">
+			<div class="col-7">
+				<div>
+					<h3>Сервис высот<h3>
+
+					<p class="text-muted">Функция возвращает линию ортодромии в формате WKT с данными о высоте</p>
+
+					<h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/api/elevation? wkt= <kbd>wkt</kbd></span></h6>
+
+					<!-- <h6><b>Пример:</b> <a href="{{ exampleurl }}">{{ exampleurl }}</a></h6> -->
+
+					<h6><b>Пример:</b> <a href="http://127.0.0.1:5000/api/elevation?wkt=POINT%2855.5+160.5%29">http://127.0.0.1:5000/api/elevation?wkt=POINT%2855.5+160.5%29</a></h6>
+
+				</div>
+                 <p><input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation();" /></p>
+                <div>
+                    <h3>Результат запроса<h3>
+                    <p><textarea id="output_linestring" name="output_linestring"></textarea></p>
+                </div>				
+			</div>
+
+			<div class="col-4">
+				<div id="llmap"></div>
+				<script src="{{url_for('static', filename='elevation.js')}}"></script>
+			</div>
+
+		</div>
+	</div>
+	
 {% endblock %}
 
 

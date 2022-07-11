@@ -47,3 +47,25 @@ map.on('click', function (event) {
      marker.addTo(map);
      marker.bindPopup(event.latlng.toString()).openPopup();
  })
+
+
+function calculate_elevation(){
+
+    // let point = document.getElementById('input_point').value;
+    // let url = 'http://' + window.location.host + '/api/elevation?wkt='+ point;
+    let url = 'http://127.0.0.1:5000/api/elevation?wkt=POINT(55.5 160.5)';
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", encodeURI(url));
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            $("#output_linestring").html(this.responseText);
+            // console.log(this.responseText);
+            addPolyline();
+        }
+    };
+    
+}
+
+
