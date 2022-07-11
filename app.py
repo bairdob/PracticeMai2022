@@ -40,7 +40,7 @@ class DataForm(Form):
 
 @app.route('/')
 def index():
-    return redirect(url_for('orthodromy'))
+    return redirect(url_for('elevation'))
 
 
 @app.route('/orthodromy', methods=['GET', 'POST'])
@@ -84,6 +84,12 @@ def calculate_orthodrome_line():
         return linestring, 200
 
     return 'Wrong coordinate system', 400
+
+
+@app.route('/elevation', methods=['GET', 'POST'])
+def elevation():
+    
+    return render_template('elevation.html')
 
 
 if __name__ == '__main__':
