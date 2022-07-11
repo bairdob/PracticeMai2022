@@ -53,7 +53,7 @@ function calculate_elevation(){
 
     // let point = document.getElementById('input_point').value;
     // let url = 'http://' + window.location.host + '/api/elevation?wkt='+ point;
-    let url = 'http://127.0.0.1:5000/api/elevation?wkt=POINT(55.5 160.5)';
+    let url = 'http://' + window.location.host +'/api/elevation?wkt=POINT(55.5 160.5)';
     
     let xhr = new XMLHttpRequest();
     xhr.open("GET", encodeURI(url));

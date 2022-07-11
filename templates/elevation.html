@@ -31,7 +31,8 @@
 
 					<!-- <h6><b>Пример:</b> <a href="{{ exampleurl }}">{{ exampleurl }}</a></h6> -->
 
-					<h6><b>Пример:</b> <a href="http://127.0.0.1:5000/api/elevation?wkt=POINT%2855.5+160.5%29">http://127.0.0.1:5000/api/elevation?wkt=POINT%2855.5+160.5%29</a></h6>
+					<h6><b>Пример:</b> <a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POINT%2855.5+160.5%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=POINT%2855.5+160.5%29' }}</a></h6>
+
 
 				</div>
                  <p><input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation();" /></p>
