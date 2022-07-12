@@ -25,10 +25,10 @@
 				<div>
 					<h3>Сервис высот<h3>
 
-					<p class="text-muted">Функция возвращает линию ортодромии в формате WKT с данными о высоте</p>
+					<p class="text-muted">Функция возвращает WKT с данными о высоте</p>
 
 					<h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/api/elevation? wkt= <kbd>wkt</kbd></span></h6>
-
+					<p class="text-warning">Координаты для выбора широты и долготы ограничены синим прямоугольником, т.к. данные подготовлены на вулканы Камчатки (55-56 с.ш. и 160-161 в.д.) </p>
 					<h6>
 						<b>Пример:</b> 
 						<ul>
@@ -43,7 +43,17 @@
 
 
 				</div>
-                 <p><input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation();" /></p>
+				Выберите запрос <kbd>wkt</kbd>:
+				<div class="input-group">
+					<select class="form-select" id="select_wkt" aria-label="Default select example">
+					 	<!-- <option selected>wkt</option> -->
+					  	<option value="1">POINT(160.5 55.5)</option>
+					  	<option value="2">LINESTRING(160.1 55.1, 160.2 55.8)</option>
+					  	<option value="3">POLYGON((160.34271240234378 55.825973254619015, 160.61187744140628 55.87839235515579, 160.55145263671878 55.754940702479175, 160.72174072265628 55.804368363403064))</option>
+					</select>
+
+	                <input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation();" />
+                </div>	
                 <div>
                     <h3>Результат запроса<h3>
                     <p><textarea id="output_linestring" name="output_linestring"></textarea></p>

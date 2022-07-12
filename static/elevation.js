@@ -51,10 +51,9 @@ map.on('click', function (event) {
 
 
 function calculate_elevation(){
-
-    // let point = document.getElementById('input_point').value;
-    // let url = 'http://' + window.location.host + '/api/elevation?wkt='+ point;
-    let url = 'http://' + window.location.host +'/api/elevation?wkt=POINT(160.5 55.5 )';
+    let sel = document.getElementById('select_wkt');
+    let wkt = sel.options[sel.selectedIndex].text;
+    let url = 'http://' + window.location.host + '/api/elevation?wkt='+ wkt;
     
     let xhr = new XMLHttpRequest();
     xhr.open("GET", encodeURI(url));
