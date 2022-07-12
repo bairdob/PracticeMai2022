@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build: .
+    container_name: python-flask-docker
+    command: python3 app.py
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/PracticeMai202
