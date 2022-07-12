@@ -45,7 +45,8 @@ map.on('click', function (event) {
      }
      marker = L.marker(event.latlng);
      marker.addTo(map);
-     marker.bindPopup(event.latlng.toString()).openPopup();
+     wkt = "POINT("+event.latlng.lng.toString()+" "+event.latlng.lat.toString()+")"
+     marker.bindPopup(wkt).openPopup();
  })
 
 
@@ -53,7 +54,7 @@ function calculate_elevation(){
 
     // let point = document.getElementById('input_point').value;
     // let url = 'http://' + window.location.host + '/api/elevation?wkt='+ point;
-    let url = 'http://' + window.location.host +'/api/elevation?wkt=POINT(55.5 160.5)';
+    let url = 'http://' + window.location.host +'/api/elevation?wkt=POINT(160.5 55.5 )';
     
     let xhr = new XMLHttpRequest();
     xhr.open("GET", encodeURI(url));
