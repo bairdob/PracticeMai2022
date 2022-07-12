@@ -6,12 +6,13 @@ from wtforms.fields import StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Regexp
 
 from shapely import wkt
-from shapely.geometry import Point, LineString
+from shapely.geometry import Point, LineString, Polygon
 
 from pyproj import Geod
 
 import requests
 import rasterio
+import re
 
 app = Flask(__name__)
 
@@ -133,7 +134,14 @@ def calculate_elevation():
         wkt_string = LineString(list_coords_3d).wkt
 
     elif (wkt_type == 'POLYGON'):
-        wkt_string = 'POLYGON'
+        # parse points (lan,lon), (lat,lon), ...
+        points = wkt_input[wkt_input.find("(")+2:wkt_input.find(")")]
+        digits = re.findall("\d+\.\d+", points)
+        digits_f = [float(it) for it in digits]
+        group_points = [digits_f[i:i+2] for i in range(0, len(digits_f), 2)]
+        
+        list_coords_3d = get_list_coords_3d(group_points)
+        wkt_string =Polygon(list_coords_3d).wkt
 
     return wkt_string, 200
 
