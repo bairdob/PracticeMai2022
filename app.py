@@ -106,6 +106,16 @@ def get_elevation(lat, lon, file):
             elevation=val[0]
             return elevation
 
+def get_list_coords_3d(iterable_object):
+    '''
+    return list of (lat,lon,elevation) objects
+    '''
+    list_coords_3d = []
+    for coord in iterable_object:
+        elevation =  get_elevation(coord[0], coord[1], ELEVATION_FILE)
+        coord_3d = (coord[0], coord[1], elevation) 
+        list_coords_3d.append(coord_3d)
+    return list_coords_3d
 
 @app.route('/api/elevation', methods=['GET'])
 def calculate_elevation():
@@ -119,13 +129,7 @@ def calculate_elevation():
         
     elif (wkt_type == 'LINESTRING'):
         wkt_2d = wkt.loads(wkt_input)
-
-        list_coords_3d = []
-        for coord in wkt_2d.coords:
-            elevation =  get_elevation(coord[0], coord[1], ELEVATION_FILE)
-            coord_3d = (coord[0], coord[1], elevation) 
-            list_coords_3d.append(coord_3d)
-
+        list_coords_3d = get_list_coords_3d(wkt_2d.coords)
         wkt_string = LineString(list_coords_3d).wkt
 
     elif (wkt_type == 'POLYGON'):
