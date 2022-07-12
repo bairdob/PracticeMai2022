@@ -29,9 +29,17 @@
 
 					<h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/api/elevation? wkt= <kbd>wkt</kbd></span></h6>
 
-					<!-- <h6><b>Пример:</b> <a href="{{ exampleurl }}">{{ exampleurl }}</a></h6> -->
+					<h6>
+						<b>Пример:</b> 
+						<ul>
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POINT%2855.5+160.5%29' }}"> {{ 
+							url_for('calculate_elevation', _external=True) }}{{ '?wkt=POINT(55.5 160.5)' }}</a></li>
 
-					<h6><b>Пример:</b> <a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POINT%2855.5+160.5%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=POINT%2855.5+160.5%29' }}</a></h6>
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=LINESTRING%2855.1+160.1,+55.2+160.2%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=LINESTRING(55.1 160.1, 55.2 160.2)' }}</a></li>
+
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POLYGON%2855.2+160.1,+55.1+160.2,+55.3+160.4%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=POLYGON((55.2 160.1, 55.1 160.2, 55.3 160.4))' }}</a></li>
+						</ul>
+					</h6>
 
 
 				</div>

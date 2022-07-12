@@ -6,7 +6,7 @@ from wtforms.fields import StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Regexp
 
 from shapely import wkt
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString
 
 from pyproj import Geod
 
@@ -98,9 +98,9 @@ def elevation():
 
 ELEVATION_FILE = 'static/srtm_N55E160.tif'
 
-def get_elevation(lon, lat): # WARNING format (lon, lat)
+def get_elevation(lon, lat, file): # WARNING format (lon, lat)
     coords = ((lon,lat), (lon,lat))
-    with rasterio.open(ELEVATION_FILE) as src:
+    with rasterio.open(file) as src:
         vals = src.sample(coords)
         for val in vals:
             elevation=val[0]
@@ -109,9 +109,30 @@ def get_elevation(lon, lat): # WARNING format (lon, lat)
 
 @app.route('/api/elevation', methods=['GET'])
 def calculate_elevation():
-    point = wkt.loads(request.args.get('wkt')) # return Point(x,y)
-    elevation = get_elevation(point.y, point.x)
-    wkt_string = Point([point.x, point.y, elevation]).wkt
+    wkt_input = request.args.get('wkt')
+    wkt_type = wkt_input.split('(')[0]
+    
+    if (wkt_type == 'POINT'):
+        point = wkt.loads(wkt_input) # return Point(x,y)
+        elevation = get_elevation(point.y, point.x, ELEVATION_FILE)
+        wkt_string = Point([point.x, point.y, elevation]).wkt
+        
+    elif (wkt_type == 'LINESTRING'):
+        # wkt_string = wkt_input[wkt_input.find("(")+1:wkt_input.find(")")]
+        wkt_2d = wkt.loads(wkt_input)
+
+        list_coords_3d = []
+        for coord in wkt_2d.coords:
+            elevation =  get_elevation(coord[1], coord[0], ELEVATION_FILE)
+            coord_3d = (coord[0], coord[1], elevation) 
+            list_coords_3d.append(coord_3d)
+
+        wkt_string = LineString(list_coords_3d).wkt
+        # wkt_string = wkt_input
+
+    elif (wkt_type == 'POLYGON'):
+        wkt_string = 'POLYGON'
+
     return wkt_string, 200
 
 
