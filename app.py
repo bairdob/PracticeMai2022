@@ -6,9 +6,13 @@ from wtforms.fields import StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Regexp
 
 from shapely import wkt
+from shapely.geometry import Point, LineString, Polygon
+
 from pyproj import Geod
 
 import requests
+import rasterio
+import re
 
 app = Flask(__name__)
 
@@ -40,7 +44,7 @@ class DataForm(Form):
 
 @app.route('/')
 def index():
-    return redirect(url_for('orthodromy'))
+    return redirect(url_for('elevation'))
 
 
 @app.route('/orthodromy', methods=['GET', 'POST'])
@@ -62,6 +66,7 @@ def orthodromy():
 def getPolylineWkt(point1, point2, n):
     geoid = Geod(ellps="WGS84")
     interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
+
     points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
     points += str(interpolated_points).strip('[]').replace(',', '').replace(
         '(', '').replace(')', ',')
@@ -84,6 +89,61 @@ def calculate_orthodrome_line():
         return linestring, 200
 
     return 'Wrong coordinate system', 400
+
+
+@app.route('/elevation', methods=['GET', 'POST'])
+def elevation():
+    
+    return render_template('elevation.html')
+
+
+ELEVATION_FILE = 'static/srtm_N55E160.tif'
+
+def get_elevation(lat, lon, file):
+    coords = ((lat, lon), (lat, lon))
+    with rasterio.open(file) as src:
+        vals = src.sample(coords)
+        for val in vals:
+            elevation=val[0]
+            return elevation
+
+def get_list_coords_3d(iterable_object):
+    '''
+    return list of (lat,lon,elevation) objects
+    '''
+    list_coords_3d = []
+    for coord in iterable_object:
+        elevation =  get_elevation(coord[0], coord[1], ELEVATION_FILE)
+        coord_3d = (coord[0], coord[1], elevation) 
+        list_coords_3d.append(coord_3d)
+    return list_coords_3d
+
+@app.route('/api/elevation', methods=['GET'])
+def calculate_elevation():
+    wkt_input = request.args.get('wkt')
+    wkt_type = wkt_input.split('(')[0]
+    
+    if (wkt_type == 'POINT'):
+        point = wkt.loads(wkt_input) # return Point(x,y)
+        elevation = get_elevation(point.x, point.y, ELEVATION_FILE)
+        wkt_string = Point([point.x, point.y, elevation]).wkt
+        
+    elif (wkt_type == 'LINESTRING'):
+        wkt_2d = wkt.loads(wkt_input)
+        list_coords_3d = get_list_coords_3d(wkt_2d.coords)
+        wkt_string = LineString(list_coords_3d).wkt
+
+    elif (wkt_type == 'POLYGON'):
+        # parse points (lan,lon), (lat,lon), ...
+        points = wkt_input[wkt_input.find("(")+2:wkt_input.find(")")]
+        digits = re.findall("\d+\.\d+", points)
+        digits_f = [float(it) for it in digits]
+        group_points = [digits_f[i:i+2] for i in range(0, len(digits_f), 2)]
+        
+        list_coords_3d = get_list_coords_3d(group_points)
+        wkt_string =Polygon(list_coords_3d).wkt
+
+    return wkt_string, 200
 
 
 if __name__ == '__main__':

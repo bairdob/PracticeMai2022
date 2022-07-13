@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+
+        html, p, .table {
+            font-size: 12px;
+        }
+
+        textarea {
+            font-size: 12px;
+            width: 100%;
+            height: 100px;
+        }
+
+        a {
+            font-weight: normal;
+        }
+
+        .hiden_button {
+			display: none;
+		}
+
+    </style>
+
+   <div class="container">
+		<div class="row">
+			<div class="col-7">
+				<div>
+					<h3>Сервис высот<h3>
+
+					<p class="text-muted">Функция возвращает формат WKT с данными о высоте</p>
+
+					<h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/api/elevation? wkt= <kbd>wkt</kbd></span></h6>
+					<p class="text-warning">Координаты для выбора широты и долготы ограничены синим прямоугольником, т.к. данные подготовлены на вулканы Камчатки (55-56 с.ш. и 160-161 в.д.) </p>
+					<h6>
+						<b>Пример:</b> 
+						<ul>
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POINT%28160.5+55.5%29' }}"> {{ 
+							url_for('calculate_elevation', _external=True) }}{{ '?wkt=POINT(160.5 55.5)' }}</a></li>
+
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=LINESTRING%28160.1+55.1,+160.2+55.8%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=LINESTRING(160.1 55.1, 160.2 55.8)' }}</a></li>
+
+							<li><a href="{{ url_for('calculate_elevation') }}{{ '?wkt=POLYGON%28%28160.34271240234378+55.825973254619015, 160.61187744140628+55.87839235515579,+160.55145263671878+55.754940702479175,+160.72174072265628+55.804368363403064%29%29' }}"> {{ url_for('calculate_elevation', _external=True) }}{{ '?wkt=POLYGON((160.34271240234378 55.825973254619015, 160.61187744140628 55.87839235515579, 160.55145263671878 55.754940702479175, 160.72174072265628 55.804368363403064))' }}</a></li>
+						</ul>
+					</h6>
+
+
+				</div>
+				Выберите запрос <kbd>wkt</kbd>:
+				<div class="input-group">
+					<select class="form-select" id="select_wkt" aria-label="Default select example">
+					 	<!-- <option selected>wkt</option> -->
+					  	<option value="1">POINT(160.5 55.5)</option>
+					  	<option value="2">LINESTRING(160.1 55.1, 160.2 55.8)</option>
+					  	<option value="3">POLYGON((160.34271240234378 55.825973254619015, 160.61187744140628 55.87839235515579, 160.55145263671878 55.754940702479175, 160.72174072265628 55.804368363403064))</option>
+					</select>
+
+	                <input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation_select();" />
+                </div>
+                <div>или</div>
+                <div>
+                	<table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%">Параметры</th>
+                                    <th style="width: 20%">Геометрия</th>
+                                    <th>Ввод данных</th>
+                                    <th style="width: 25%">Описание</th>
+                                </tr>
+                            </thead>           
+
+                            <tbody>
+                                <tr>
+                                    <td><kbd>wkt</kbd></td>
+                                    <td>
+                                    	<div class="input-group">
+											<select class="form-select" id="select_format">
+											 	<option selected>wkt</option>
+												<option value="point">POINT</option>
+											  	<option value="linestring">LINESTRING</option>
+											  	<option value="polygon" disabled>POLYGON</option>
+											</select>
+                						</div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                        	<input class="form-control" id="input_wkt" name="input_wkt" type="text" value="">
+                                        	</input>
+                                            <span class="input-group-btn">
+										            <div class="wkt-btn">
+														<button class="hiden_button btn btn-outline-secondary" button="point" onclick="makePoint('input_wkt');"> point<i class='fa-solid fa-location-dot' ></i></button>
+													</div>
+													<div class="wkt-btn">
+													    <button class="hiden_button btn btn-outline-secondary" button="linestring" onclick="makePolyline('input_wkt');"> line<i class='fa-solid fa-location-dot'></i></button>
+													</div>
+													<div class="wkt-btn">
+													    <button  class="hiden_button btn btn-outline-secondary" button="polygon"> poly<i class='fa-solid fa-location-dot'></i></button>
+												</div>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>Данные в формате wkt</td>
+                                </tr>
+
+                                
+                            </tbody>
+                        </table>	
+                    <p><input id="clickMe" type="button" class="btn btn-primary" value="Выполнить" onclick="calculate_elevation_custom();" /></p>    
+                 </div>
+                <div>
+                    <h3>Результат запроса<h3>
+                    <p><textarea id="output_linestring" name="output_linestring"></textarea></p>
+                </div>				
+			</div>
+
+			<div class="col-4">
+				<div id="llmap"></div>
+				<script src="{{url_for('static', filename='elevation.js')}}"></script>
+				<p><input type="checkbox" id="checkbox_image" checked data-toggle="toggle" onchange="check_image()"> Image show</p>
+			</div>
+
+		</div>
+	</div>
+	
+{% endblock %}
+
+
