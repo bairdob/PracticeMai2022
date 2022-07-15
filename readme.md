@@ -1,8 +1,9 @@
 # Оглавление
 
 1. [Задание](#Задание)
-1. [Результаты](#Результаты)
-2. [Build](#Build)
+2. [Результаты](#Результаты)
+3. [Build](#Build)
+4. [Testing](#Testing)   
 
 # Задание
 
@@ -69,4 +70,38 @@ docker container run -p 5001:5000 python-flask-docker
 ```
 127.0.0.1:5001
 ```
+
+# Testing
+
+1. Run tests
+
+```
+$ python3 -m unittest -v app_tests
+test_getPolylineWkt_strReturned (app_tests.AdditionalFunctionsTest) ... ok
+test_get_elevatation_intReturned (app_tests.AdditionalFunctionsTest) ... ok
+test_get_list_coords_3d_listReturned (app_tests.AdditionalFunctionsTest) ... ok
+test_calculate_elevation_request (app_tests.AppTestCase) ... ok
+test_calculate_orthodrome_line_request (app_tests.AppTestCase) ... ok
+test_elevation_page (app_tests.AppTestCase) ... ok
+test_index_redirect (app_tests.AppTestCase) ... ok
+test_orthodromy_page (app_tests.AppTestCase) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.316s
+
+OK
+```
+
+2. Coverage report results:
+
+```
+$ coverage report -m
+Name                                                                             Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------------------------------
+app.py                                                                              84      1    99%   176
+app_tests.py                                                                        54      0   100%
+--------------------------------------------------------------------------------------------------------------
+
+```
+
 
