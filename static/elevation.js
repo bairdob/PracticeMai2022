@@ -180,3 +180,6 @@ function makePolyline(inputId) {
 
 }
 
+document.getElementById("select_format").addEventListener("change", (ev) => {
+    document.getElementById('input_wkt').value='';
+});

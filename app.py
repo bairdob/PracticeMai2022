@@ -51,19 +51,25 @@ def index():
 def orthodromy():
     orthodromyForm = DataForm(request.form)
 
-    linestring_url= url_for('calculate_orthodrome_line',
-                         point1=orthodromyForm.input_point1.data,
-                         point2=orthodromyForm.input_point2.data,
-                         cs=orthodromyForm.input_coordinate_system.data,
-                         count=orthodromyForm.input_count.data, 
-                         _external =True)
-
-    return render_template('orthodromy.html',
-                           orthodromyForm=orthodromyForm,
-                           exampleurl=linestring_url)
+    return render_template('orthodromy.html', orthodromyForm=orthodromyForm)
 
 
 def getPolylineWkt(point1, point2, n):
+    '''
+    Gets interpolating orthodrome between two (lon,lat) points and 
+    formats to Well-known text (WKT) 
+                
+    reference link: https://gis.stackexchange.com/questions/311362/interpolating-orthodrome-between-two-lon-lat-points-in-python
+
+    Parameters:
+        point1 (Point(x,y)): from shapely.geometry
+        point2 (Point(x,y)): from shapely.geometry
+        n (int): enterpolating points
+
+    Returns:
+        str: Returning WKT
+    '''
+
     geoid = Geod(ellps="WGS84")
     interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
 
@@ -93,13 +99,26 @@ def calculate_orthodrome_line():
 
 @app.route('/elevation', methods=['GET', 'POST'])
 def elevation():
-    
     return render_template('elevation.html')
 
 
 ELEVATION_FILE = 'static/srtm_N55E160.tif'
 
 def get_elevation(lat, lon, file):
+    '''
+    Getting elevation at particular coordinate (lat/lon)
+
+    reference link: https://gis.stackexchange.com/questions/228920/getting-elevation-at-particular-coordinate-lat-lon-programmatically-but-offli 
+
+    Parameters:
+        lat (int): Point latitude
+        lon (int): Point longitude 
+        file (str): patth go GeoTIFF file
+
+    Returns:
+        int: Returning elevation value at the point 
+    '''
+
     coords = ((lat, lon), (lat, lon))
     with rasterio.open(file) as src:
         vals = src.sample(coords)
@@ -109,8 +128,15 @@ def get_elevation(lat, lon, file):
 
 def get_list_coords_3d(iterable_object):
     '''
-    return list of (lat,lon,elevation) objects
+    Return list of (lat,lon,elevation) objects
+
+    Parameters:
+        iterable_object (list)
+
+    Returns:
+        list: list of (lat,lon,elevation) objects
     '''
+
     list_coords_3d = []
     for coord in iterable_object:
         elevation =  get_elevation(coord[0], coord[1], ELEVATION_FILE)
@@ -134,7 +160,7 @@ def calculate_elevation():
         wkt_string = LineString(list_coords_3d).wkt
 
     elif (wkt_type == 'POLYGON'):
-        # parse points (lan,lon), (lat,lon), ...
+        # parse input to [(lan,lon), (lat,lon), ...]
         points = wkt_input[wkt_input.find("(")+2:wkt_input.find(")")]
         digits = re.findall("\d+\.\d+", points)
         digits_f = [float(it) for it in digits]

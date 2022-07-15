@@ -32,7 +32,8 @@
 
                         <h6><b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/geoapi/calculate_orthodrome_line? point1= <kbd>point1</kbd> &  point2= <kbd>point2</kbd> & cs= <kbd>cs</kbd> & count= <kbd>count</kbd></span></h6>
 
-                        <h6><b>Пример:</b> <a href="{{ exampleurl }}">{{ exampleurl }}</a></h6>
+                        <h6><b>Пример:</b><a href="{{ url_for('calculate_orthodrome_line') }}{{ '?point1=POINT%280.0+0.0%29&point2=POINT%280.0+0.0%29&cs=СК-42&count=10' }}"> {{ 
+                            url_for('calculate_orthodrome_line', _external=True) }}{{ '?point1=POINT(0.0 0.0)&point2=POINT(0.0 0.0)&cs=СК-42&count=10' }}</a></h6>
 
                         <table class="table table-bordered table-sm">
                             <thead>
@@ -95,7 +96,7 @@
          
             <div class="col-4">
                 <div id="llmap"></div>
-                <script src="{{url_for('static', filename='demo.js')}}"></script>
+                <script src="{{url_for('static', filename='orthodromy.js')}}"></script>
             </div>
 
         </div>

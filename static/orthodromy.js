@@ -11,6 +11,7 @@ function makePoint(inputId, markerId) {
         if (markers[markerId]) {
             map.removeLayer(markers[markerId]);
             map.invalidateSize();
+            output_linestring.innerHTML = '';
         }
         if (polyline){
             map.removeLayer(polyline);
