@@ -27,8 +27,8 @@ function makePoint(inputId, markerId) {
 }
 
 
-function calculate_orthodrome_line(){
-
+function calculate_orthodrome_line(event){
+    
     let point1 = document.getElementById('input_point1').value;
     let point2 = document.getElementById('input_point2').value;
     let cs = document.getElementById('input_coordinate_system').value;
@@ -43,6 +43,9 @@ function calculate_orthodrome_line(){
             $("#output_linestring").html(this.responseText);
             // console.log(this.responseText);
             addPolyline();
+        }
+        else {   
+            $("#output_linestring").html(this.statusText);
         }
     };
     
@@ -104,7 +107,13 @@ count.addEventListener('input', function(){
     changeInputBackground(count, patternDigit)
 });
 
-
+$(document).ready(function($) {
+  $(document).on('submit', '#submit-form', function(event) {
+    event.preventDefault();
+  
+    alert('page did not reload');
+  });
+});
 
 
 

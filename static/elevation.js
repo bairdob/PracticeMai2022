@@ -63,6 +63,7 @@ map.on('click', function (event) {
 
 
 function calculate_elevation_select(){
+
     let sel = document.getElementById('select_wkt');
     let wkt = sel.options[sel.selectedIndex].text;
     let url = 'http://' + window.location.host + '/api/elevation?wkt='+ wkt;
@@ -140,6 +141,9 @@ function calculate_elevation_custom(){
         if (this.readyState == 4 && this.status == 200) {
             $("#output_linestring").html(this.responseText);
             // console.log(this.responseText);
+        }
+        else {   
+            $("#output_linestring").html(this.statusText);
         }
     };
     
