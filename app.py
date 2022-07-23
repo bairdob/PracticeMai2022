@@ -14,7 +14,12 @@ import requests
 import rasterio
 import re
 
+from threading import Thread
+from queue import Queue
+
+
 app = Flask(__name__)
+q = Queue()
 
 PATTERN_POINT = '^POINT\([-]?[0-9]*.[0-9]+ [-]?[0-9]*.[0-9]+\)'
 
@@ -74,10 +79,14 @@ def getPolylineWkt(point1, point2, n):
     interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
 
     interpolated_points.insert(0, (point1.x, point1.y)) # add point1
-    interpolated_points.append((point1.x, point1.y)) # add point2
+    interpolated_points.append((point2.x, point2.y)) # add point2
     points = ', '.join(map(lambda x: str(x[0]) + ' ' + str(x[1]), interpolated_points))
 
     return ''.join(['LINESTRING(', points, ')']) 
+
+def async_getPolylineWkt(app, point1, point2, n):
+    with app.app_context():
+        q.put(getPolylineWkt(point1, point2, n))
 
 
 @app.route('/api/calculate_orthodrome_line', methods=['GET'])
@@ -88,7 +97,11 @@ def calculate_orthodrome_line():
     count = int(request.args.get('count'))
 
     if cs == 'СК-42':
-        linestring = getPolylineWkt(point1, point2, count)
+        thd = Thread(target=async_getPolylineWkt, args=(app, point1, point2, count))
+        thd.start()
+        while thd.is_alive():
+            linestring = q.get()
+
         return linestring, 200
 
     return 'Wrong coordinate system', 400

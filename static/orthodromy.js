@@ -39,14 +39,21 @@ function calculate_orthodrome_line(event){
     xhr.open("GET", encodeURI(url));
     xhr.send();
     xhr.onreadystatechange = function() {
+
         if (this.readyState == 4 && this.status == 200) {
             $("#output_linestring").html(this.responseText);
             // console.log(this.responseText);
             addPolyline();
         }
         else {   
-            $("#output_linestring").html(this.statusText);
-        }
+            if (this.readyState == 3) { // demostration only: freezing page
+                $("#output_linestring").html('calculating... please wait');
+            }
+                else {
+                    $("#output_linestring").html(this.statusText);
+                }
+            }
+
     };
     
 }
@@ -89,21 +96,21 @@ function changeInputBackground(element, pattern){
 };
 
 let patternDigit = new RegExp(/^[0-9]+$/);
-let patternPoint = new RegExp(/^POINT\([-]?[0-9]*\.[0-9] [-]?[0-9]*\.[0-9]+\)$/);
+let patternPoint = new RegExp(/^POINT\([-]?[0-9]*\.[0-9]* [-]?[0-9]*\.[0-9]*\)$/);
 
 let point1 = document.getElementById('input_point1');
 let point2 = document.getElementById('input_point2');
 let count = document.getElementById('input_count');
 
-point1.addEventListener('input', function(){
+point1.addEventListener('change', function(){
     changeInputBackground(point1, patternPoint)
 });
 
-point2.addEventListener('input', function(){
+point2.addEventListener('change', function(){
     changeInputBackground(point2, patternPoint)
 });
 
-count.addEventListener('input', function(){
+count.addEventListener('change', function(){
     changeInputBackground(count, patternDigit)
 });
 
