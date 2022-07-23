@@ -73,14 +73,11 @@ def getPolylineWkt(point1, point2, n):
     geoid = Geod(ellps="WGS84")
     interpolated_points = geoid.npts(point1.x, point1.y, point2.x, point2.y, n)
 
-    points = str(point1.x) + ' ' + str(point1.y) + ', ' #add point1 
-    points += str(interpolated_points).strip('[]').replace(',', '').replace(
-        '(', '').replace(')', ',')
-    points += ' ' + str(point2.x) + ' ' + str(point2.y)  #add point2 
+    interpolated_points.insert(0, (point1.x, point1.y)) # add point1
+    interpolated_points.append((point1.x, point1.y)) # add point2
+    points = ', '.join(map(lambda x: str(x[0]) + ' ' + str(x[1]), interpolated_points))
 
-    linestring = 'LINESTRING(' + points + ')'
-
-    return linestring
+    return ''.join(['LINESTRING(', points, ')']) 
 
 
 @app.route('/api/calculate_orthodrome_line', methods=['GET'])
