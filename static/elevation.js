@@ -76,6 +76,9 @@ function calculate_elevation_select(){
             $("#output_linestring").html(this.responseText);
             // console.log(this.responseText);
         }
+        else {
+             $("#output_linestring").html(this.statusText);
+        }
     };
     
 }
@@ -187,3 +190,20 @@ function makePolyline(inputId) {
 document.getElementById("select_format").addEventListener("change", (ev) => {
     document.getElementById('input_wkt').value='';
 });
+
+function changeInputBackground(element, pattern){
+    if (element.value == '' || !pattern.test(element.value)) {
+        element.style.backgroundColor = '#FFCDD2';
+    } else {
+        element.style.backgroundColor = null;
+    };
+};
+
+let patternWkt = new RegExp(/^(POINT|LINESTRING)\([-]?[0-9]*\.[0-9]* [-]?[0-9]*\.[0-9]*\)$/);
+
+let input_wkt = document.getElementById('input_wkt');
+
+input_wkt.addEventListener('change', function(){
+    changeInputBackground(input_wkt, patternWkt);
+});
+
